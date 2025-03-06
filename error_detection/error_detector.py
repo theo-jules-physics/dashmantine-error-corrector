@@ -11,11 +11,13 @@ def detect_error_component(component: ComponentInfo) -> str:
 
     component.errors = {
         'count': 0,
+        'type': None,
         'message': f"No errors detected for {component.name} component",
         'invalid_items': []
     }
 
     if not hasattr(dmc, component.name):
+        component.errors["type"] = "component"
         component.errors["count"] = 1
         component.errors["message"] = f"Component {component.name} does not exist"
         component.errors["invalid_items"].append(component.name)
@@ -23,6 +25,7 @@ def detect_error_component(component: ComponentInfo) -> str:
     
     for parameter in component.parameters:
         if not check_parameter_exists(component.name, parameter):
+            component.errors["type"] = "parameter"
             component.errors["count"] += 1
             component.errors["invalid_items"].append(parameter)
 

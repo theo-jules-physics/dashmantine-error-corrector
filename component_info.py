@@ -9,3 +9,5 @@ class ComponentInfo:
     parameters: list[str] = field(default_factory=list)
 
     errors: dict[str, any] | None = None
+    documentation: dict[str, str] | None = None
+    signature: dict[str, any] | None = None
