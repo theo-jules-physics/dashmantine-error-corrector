@@ -80,7 +80,7 @@ class DmcMigrator:
         """
         self.detect_dmc_usage()
 
-        self.get_usage_summary()
+        return self.get_usage_summary()
 
 
 if __name__ == "__main__":
