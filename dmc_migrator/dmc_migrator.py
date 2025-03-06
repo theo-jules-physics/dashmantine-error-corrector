@@ -60,19 +60,7 @@ class DmcMigrator:
         if not self.usage_results:
             self.detect_dmc_usage()
 
-        all_components = set()
-        file_details = {}
-
-        for file_path, components in self.usage_results.items():
-            file_details[file_path] = components
-            all_components.update(components.keys())
-
-        return {
-            "file_count": len(self.usage_results),
-            "component_count": len(all_components),
-            "components_used": sorted(list(all_components)),
-            "files": file_details,
-        }
+        return self.usage_results
 
     def run(self):
         """

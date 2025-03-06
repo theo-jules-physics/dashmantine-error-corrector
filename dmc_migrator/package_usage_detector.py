@@ -12,7 +12,7 @@ class DMCUsageDetector:
     def __init__(self, root_dir, target_package="dash_mantine_components"):
         self.root_dir = root_dir
         self.target_package = target_package
-        self.results = {}
+        self.results = []
 
     def scan_files(self):
         for subdir, _, files in os.walk(self.root_dir):
@@ -58,12 +58,7 @@ class DMCUsageDetector:
 
                     parameters = arguments + keyword_arguments
 
-                    if file_path not in self.results:
-                        self.results[file_path] = {}
-
-                    if component_name not in self.results[file_path]:
-                        self.results[file_path][component_name] = []
-                    self.results[file_path][component_name].append(
+                    self.results.append(
                         ComponentInfo(
                             name=component_name,
                             file_name=file_path,
