@@ -2,6 +2,8 @@ import ast
 import os
 import logging
 
+from component_info import ComponentInfo
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,12 +64,12 @@ class DMCUsageDetector:
                     if component_name not in self.results[file_path]:
                         self.results[file_path][component_name] = []
                     self.results[file_path][component_name].append(
-                        {
-                            "name": component_name,
-                            "file_name": file_path,
-                            "line_limits": [start_line, end_line],
-                            "parameters": parameters,
-                        }
+                        ComponentInfo(
+                            name=component_name,
+                            file_name=file_path,
+                            line_limits=[start_line, end_line],
+                            parameters=parameters,
+                        )
                     )
 
     def _extract_alias(self, tree):
