@@ -62,11 +62,9 @@ class DmcMigrator:
         file_details = {}
 
         for file_path, components in self.usage_results.items():
-            file_details[file_path] = {
-                "components": list(components.keys()),
-                "line_ranges": components,
-            }
+            file_details[file_path] = components
             all_components.update(components.keys())
+
 
         return {
             "file_count": len(self.usage_results),

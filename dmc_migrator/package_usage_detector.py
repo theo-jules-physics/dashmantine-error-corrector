@@ -48,13 +48,26 @@ class DMCUsageDetector:
                         else start_line
                     )
 
+                    arguments = [
+                        arg.id if isinstance(arg, ast.Name) else ast.dump(arg)
+                        for arg in node.args
+                    ]
+                    keyword_arguments = [kw.arg for kw in node.keywords]
+
+                    parameters = arguments + keyword_arguments
+
                     if file_path not in self.results:
                         self.results[file_path] = {}
 
                     if component_name not in self.results[file_path]:
                         self.results[file_path][component_name] = []
                     self.results[file_path][component_name].append(
-                        [start_line, end_line]
+                        {
+                            "name": component_name,
+                            "file_name": file_path,
+                            "line_limits": [start_line, end_line],
+                            "parameters": parameters,
+                        }
                     )
 
     def _extract_alias(self, tree):
