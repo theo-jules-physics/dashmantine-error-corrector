@@ -18,7 +18,9 @@ class DmcMigrator:
 
     def _initialize_versions(self, old_version, target_version):
         if not old_version:
-            logger.error("Please provide the old version of dash_mantine_components.")
+            logger.error(
+                "Please provide the old version of dash_mantine_components."
+            )
         else:
             self.old_version = old_version
 
@@ -65,7 +67,6 @@ class DmcMigrator:
             file_details[file_path] = components
             all_components.update(components.keys())
 
-
         return {
             "file_count": len(self.usage_results),
             "component_count": len(all_components),
@@ -83,6 +84,4 @@ class DmcMigrator:
 
 
 if __name__ == "__main__":
-    migrator = DmcMigrator(
-        repo_path="/Users/mbelkhayat/Humanitics_repos/webapp_dashboard/src/components"
-    ).run()
+    migrator = DmcMigrator(repo_path="test_cases/current").run()
