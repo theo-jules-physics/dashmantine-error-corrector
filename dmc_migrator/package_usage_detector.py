@@ -14,6 +14,39 @@ class DMCUsageDetector:
         self.target_package = target_package
         self.results = []
 
+    def _extract_parameters(self, node):
+        if isinstance(node, ast.Call):
+            arguments = [
+                arg.id if isinstance(arg, ast.Name) else type(arg).__name__
+                for arg in node.args
+            ]
+            keyword_arguments = []
+            for kw in node.keywords:
+                if kw.arg == "children" and isinstance(
+                    kw.value, (ast.Call, ast.List)
+                ):
+                    keyword_arguments.append((kw.arg, None))
+                else:
+                    keyword_arguments.append(kw.arg)
+
+            if (
+                len(arguments) == 0
+                and len(keyword_arguments) == 1
+                and keyword_arguments[0][1] is None
+            ):
+                return []
+
+            parameters = arguments + [
+                kw[0] if isinstance(kw, tuple) else kw
+                for kw in keyword_arguments
+            ]
+            if parameters == ["List"]:
+                parameters = []
+
+            return parameters
+        else:
+            return []
+
     def scan_files(self):
         for subdir, _, files in os.walk(self.root_dir):
             for file in files:
@@ -50,13 +83,7 @@ class DMCUsageDetector:
                         else start_line
                     )
 
-                    arguments = [
-                        arg.id if isinstance(arg, ast.Name) else ast.dump(arg)
-                        for arg in node.args
-                    ]
-                    keyword_arguments = [kw.arg for kw in node.keywords]
-
-                    parameters = arguments + keyword_arguments
+                    parameters = self._extract_parameters(node)
 
                     self.results.append(
                         ComponentInfo(
