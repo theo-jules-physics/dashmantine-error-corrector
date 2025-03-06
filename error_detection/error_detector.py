@@ -1,21 +1,13 @@
 import dash_mantine_components as dmc
-from inspect import signature
-from dataclasses import dataclass, field
-
-@dataclass
-class ComponentCharacteristics:
-    name: str
-    parameters: list[str] = field(default_factory=list)
-    file_name: str
-    line_limits : list[int]
-    errors: dict[str, any] | None = None
+from inspect import signature, Signature
+from component_info import ComponentInfo
 
 def check_parameter_exists(component_name: str, parameter: str):
     component = getattr(dmc, component_name)
     sig = signature(component)
     return parameter in sig.parameters
 
-def detect_error_component(component: ComponentCharacteristics) -> str:
+def detect_error_component(component: ComponentInfo) -> str:
 
     component.errors = {
         'count': 0,

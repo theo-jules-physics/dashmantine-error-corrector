@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
 @dataclass
-class ComponentCharacteristics:
+class ComponentInfo:
     name: str
     parameters: list[str] = field(default_factory=list)
     file_name: str
