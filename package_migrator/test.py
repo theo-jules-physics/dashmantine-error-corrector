@@ -2,7 +2,7 @@ import os
 import shutil
 import pytest
 
-from dmc_migrator.dmc_migrator import DmcMigrator
+from package_migrator.package_migrator import PackageMigrator
 
 
 TEST_CASES = {
@@ -148,7 +148,7 @@ def setup_test_env():
 def test_migration(setup_test_env):
     test_dir = setup_test_env
 
-    DmcMigrator(test_dir).run()
+    PackageMigrator(test_dir, "dash-mantine-components").run()
 
     failed_cases = []
 

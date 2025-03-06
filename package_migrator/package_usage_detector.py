@@ -7,9 +7,9 @@ from component_info import ComponentInfo
 logger = logging.getLogger(__name__)
 
 
-class DMCUsageDetector:
+class PackageUsageDetector:
 
-    def __init__(self, root_dir, target_package="dash_mantine_components"):
+    def __init__(self, root_dir, target_package):
         self.root_dir = root_dir
         self.target_package = target_package
         self.results = []
