@@ -24,8 +24,8 @@ def setup_environments(old_version, new_version, base_dir=None):
     old_env_name = f"dmc_v{old_version.replace('.', '_')}_env"
     new_env_name = f"dmc_v{new_version.replace('.', '_')}_env"
     
-    old_env_path = os.path.join(base_dir, old_env_name)
-    new_env_path = os.path.join(base_dir, new_env_name)
+    old_env_path = os.path.join(base_dir, 'envs', old_env_name)
+    new_env_path = os.path.join(base_dir, 'envs', new_env_name)
     
     # Determine Python executable and activation path based on OS
     is_windows = platform.system() == "Windows"
@@ -48,10 +48,12 @@ def setup_environments(old_version, new_version, base_dir=None):
     print(f"Installing dash-mantine-components=={old_version} in old environment...")
     pip_cmd = os.path.join(old_bin, "pip")
     subprocess.run([pip_cmd, "install", f"dash-mantine-components=={old_version}"], check=True)
+    subprocess.run([pip_cmd, "install", f"dash"], check=True)
     
     print(f"Installing dash-mantine-components=={new_version} in new environment...")
     pip_cmd = os.path.join(new_bin, "pip")
     subprocess.run([pip_cmd, "install", f"dash-mantine-components=={new_version}"], check=True)
+    subprocess.run([pip_cmd, "install", f"dash"], check=True)
     
     print("Environment setup complete!")
     return old_env_path, new_env_path
