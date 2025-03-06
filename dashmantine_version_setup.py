@@ -2,64 +2,34 @@ import os
 import subprocess
 import sys
 import platform
-import shutil
 
-def setup_environments(old_version, new_version, base_dir=None):
-    """
-    Set up two virtual environments with different dash-mantine-components versions
-    
-    Args:
-        old_version (str): Version string for the old DMC version (e.g., "0.12.1")
-        new_version (str): Version string for the new DMC version (e.g., "0.15.3")
-        base_dir (str): Base directory to create environments in (default: current dir)
-        
-    Returns:
-        tuple: Paths to the old and new environments
-    """
+
+def setup_environments(package_name, versions: list[str], mandatory_packages=[], envs_dir=None):
     # Set base directory
-    if base_dir is None:
-        base_dir = os.getcwd()
-    
-    # Create environment directory names
-    old_env_name = f"dmc_v{old_version.replace('.', '_')}_env"
-    new_env_name = f"dmc_v{new_version.replace('.', '_')}_env"
-    
-    old_env_path = os.path.join(base_dir, 'envs', old_env_name)
-    new_env_path = os.path.join(base_dir, 'envs', new_env_name)
-    
+    if envs_dir is None:
+        envs_dir = os.path.join(os.getcwd(), 'envs')
+
     # Determine Python executable and activation path based on OS
     is_windows = platform.system() == "Windows"
     python_cmd = sys.executable
-    
-    # Paths to bin/Scripts directory and activation script
     bin_dir = "Scripts" if is_windows else "bin"
-    old_bin = os.path.join(old_env_path, bin_dir)
-    new_bin = os.path.join(new_env_path, bin_dir)
-    
-    # Create environments if they don't exist
-    for env_path in [old_env_path, new_env_path]:
-        if not os.path.exists(env_path):
-            print(f"Creating environment at {env_path}...")
-            subprocess.run([python_cmd, "-m", "venv", env_path], check=True)
+
+    for version in versions:
+        version_env_name = f"{package_name}_v{version.replace('.', '_')}_env"
+        version_env_path = os.path.join(envs_dir, version_env_name)
+        bin_path = os.path.join(version_env_path, bin_dir)
+        if not os.path.exists(version_env_path):
+            print(f"Creating environment at {version_env_path}...")
+            subprocess.run([python_cmd, "-m", "venv", version_env_path], check=True)
         else:
-            print(f"Environment at {env_path} already exists")
-    
-    # Install packages in each environment
-    print(f"Installing dash-mantine-components=={old_version} in old environment...")
-    pip_cmd = os.path.join(old_bin, "pip")
-    subprocess.run([pip_cmd, "install", f"dash-mantine-components=={old_version}"], check=True)
-    subprocess.run([pip_cmd, "install", f"dash"], check=True)
-    
-    print(f"Installing dash-mantine-components=={new_version} in new environment...")
-    pip_cmd = os.path.join(new_bin, "pip")
-    subprocess.run([pip_cmd, "install", f"dash-mantine-components=={new_version}"], check=True)
-    subprocess.run([pip_cmd, "install", f"dash"], check=True)
+            print(f"Environment at {version_env_path} already exists")
+
+        print(f"Installing {package_name}=={version} in environment...")
+        pip_cmd = os.path.join(bin_path, "pip")
+        subprocess.run([pip_cmd, "install", f"{package_name} == {version}"], check=True)
+        for package in mandatory_packages:
+            print(f"Installing {package} in environment...")
+            subprocess.run([pip_cmd, "install", package], check=True)
     
     print("Environment setup complete!")
-    return old_env_path, new_env_path
-
-# Example usage
-if __name__ == "__main__":
-    old_env, new_env = setup_environments("0.12.1", "0.15.3")
-    print(f"Old environment: {old_env}")
-    print(f"New environment: {new_env}")
+    return [os.path.join(envs_dir, f"{package_name}_v{version.replace('.', '_')}_env") for version in versions]
