@@ -55,8 +55,10 @@ class DMCUsageDetector:
 
     def _analyze_file(self, file_path):
         with open(file_path, "r", encoding="utf-8") as f:
+            file_content = f.read()
+            file_lines = file_content.splitlines()
             try:
-                tree = ast.parse(f.read(), filename=file_path)
+                tree = ast.parse(file_content, filename=file_path)
             except SyntaxError:
                 print(f"Syntax error in file: {file_path}")
                 return
@@ -83,6 +85,8 @@ class DMCUsageDetector:
                         else start_line
                     )
 
+                    content = ('\n').join(file_lines[start_line-1:end_line])
+
                     parameters = self._extract_parameters(node)
 
                     self.results.append(
@@ -90,6 +94,7 @@ class DMCUsageDetector:
                             name=component_name,
                             file_name=file_path,
                             line_limits=[start_line, end_line],
+                            content=content,
                             parameters=parameters,
                         )
                     )
